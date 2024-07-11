@@ -1,0 +1,122 @@
+<app-header></app-header>
+<br><br>
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New Product" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+                    </div>
+                </ng-template>
+
+                <!-- Add any additional toolbar items here -->
+            </p-toolbar>
+
+            <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','category']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedProducts" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Manage Products</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                        <th>Image</th>
+                        <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+                        <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">ID</span>
+                            {{product.id}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Name</span>
+                            {{product.name}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Image</span>
+                            <img [src]="product.image" [alt]="product.name" width="100" class="shadow-4" />
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Price</span>
+                            {{product.price | currency:'USD'}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Category</span>
+                            {{product.category}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-warning mr-2" (click)="editProduct(product)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteProduct(product)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true" class="p-fluid">
+            <form [formGroup]="productForm" (ngSubmit)="saveProduct()" class="product-form">
+                <div *ngIf="submitted && productForm.controls['name'].errors" class="error">
+                    Name is required.
+                </div>
+                <input formControlName="name" placeholder="Name" class="p-inputtext"/>
+            
+                <div *ngIf="submitted && productForm.controls['description'].errors" class="error">
+                    Description is required.
+                </div>
+                <textarea formControlName="description" placeholder="Description" class="p-inputtext"></textarea>
+            
+                <div *ngIf="submitted && productForm.controls['price'].errors" class="error">
+                    Price is required and must be a number.
+                </div>
+                <input formControlName="price" placeholder="Price" class="p-inputtext"/>
+            
+                <div *ngIf="submitted && productForm.controls['category'].errors" class="error">
+                    Category is required.
+                </div>
+                <select formControlName="category" class="p-dropdown">
+                    <option *ngFor="let category of categories" [value]="category.value">{{category.label}}</option>
+                </select>
+            
+                <div *ngIf="submitted && !currentFileUpload" class="error">
+                    Image is required.
+                </div>
+                
+                <input type="file" (change)="onFileChange($event)" class="p-fileupload"/>
+            
+                <div class="mt-4">
+                    <button type="submit" class="p-button p-button-success">Save Product</button>
+                    <button type="button" class="p-button p-button-danger " (click)="hideDialog()">Cancel</button>
+                </div>
+            </form>
+        </p-dialog>
+
+        <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" [visible]="deleteProductDialog" [acceptLabel]="'Yes'" [rejectLabel]="'No'" (accept)="confirmDelete()" (reject)="deleteProductDialog = false">
+            Are you sure you want to delete this product?
+        </p-confirmDialog>
+
+        <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" [visible]="deleteProductsDialog" [acceptLabel]="'Yes'" [rejectLabel]="'No'" (accept)="confirmDeleteSelected()" (reject)="deleteProductsDialog = false">
+            Are you sure you want to delete the selected products?
+        </p-confirmDialog>
+    </div>
+</div>

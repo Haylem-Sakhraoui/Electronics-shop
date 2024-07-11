@@ -1,0 +1,22 @@
+<div class="layout-topbar" style="background: linear-gradient(to right, rgb(225, 116, 7), rgb(236, 172, 124));">
+    <a class="layout-topbar-logo" routerLink="">
+        <!-- <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo"> -->
+        <span>ELECTRONIQUES DAGDOUG</span>
+    </a>
+
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button">
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+    <div #topbarmenu class="layout-topbar-menu">
+        <button *ngIf= "user.role === 'ADMIN'" class="p-link layout-topbar-button" [routerLink]="'/admin'">
+            <i class="pi pi-cog"></i>
+            <span>ADMIN</span>
+        </button>
+        <button *ngIf="!isLoggedIn" class="p-button-success" pButton pRipple type="button" label="login" routerLink="/login"></button>
+        <button *ngIf="isLoggedIn" class="p-link layout-topbar-button" style="color: red;" (click)="logOut()">
+            <i class="pi pi-power-off"></i>
+            <span>Log Out</span>
+        </button>
+    </div>
+</div>

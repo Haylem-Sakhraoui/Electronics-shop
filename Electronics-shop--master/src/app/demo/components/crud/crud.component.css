@@ -1,0 +1,30 @@
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .card {
+    background-color: #f0f0f0;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .p-button-success {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .p-button-warning {
+    background-color: #ffc107;
+    color: #212529;
+  }
+  
+  .error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  /* Add more styles as per your design requirements */
+  
